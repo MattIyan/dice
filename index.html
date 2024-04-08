@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--Fontawesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>Dice</title>
+</head>
+<body>
+
+    <div id="container">
+        <p>Guess a number between 1 and 6</p>
+        <input id="userInput">
+        <button id="enterButton">Enter</button>
+        <button id="againButton">Play again</button>
+        <p id="guessText"></p>
+        <p id="resultText"></p>
+    </div>
+    
+    <!-- FIRST WE MAKE SIMPLE CUBE -->
+    <div class="container">
+        <div class="cube" id="cube">
+            <div class="front">
+                <span class="fas fa-circle"></span>
+            </div>
+            <div class="back">
+                    <!-- i use pre tag to align dots -->
+                    <pre class="firstPre"><span class="fas fa-circle"></span>    <span class="fas fa-circle"></span>    <span class="fas fa-circle"></span></pre><br>
+                    <pre class="secondPre"><span class="fas fa-circle"></span>    <span class="fas fa-circle"></span>    <span class="fas fa-circle"></span></pre>
+            </div>
+            <div class="top">
+                <span class="fas fa-circle"></span>
+                <span class="fas fa-circle"></span>
+            </div>
+            <div class="left">
+                <span class="fas fa-circle"></span>
+                <span class="fas fa-circle"></span>
+                <span class="fas fa-circle"></span>
+
+            </div>
+            <div class="right">
+                <span class="fas fa-circle"></span>
+                <span class="fas fa-circle"></span>
+                <span class="fas fa-circle"></span>
+                <span class="fas fa-circle"></span>
+                <span class="fas fa-circle"></span>
+
+            </div>
+            <div class="bottom">
+                <span class="fas fa-circle"></span>
+                <span class="fas fa-circle"></span>
+                <span class="fas fa-circle"></span>
+                <span class="fas fa-circle"></span>
+
+            </div>
+        </div>
+    </div>
+    <!-- JS CODE -->
+    <script type="text/javascript">
+        let cube = document.getElementById('cube');
+        let userInput = document.getElementById('userInput');
+        let guessText = document.getElementById('guessText');
+        let resultText = document.getElementById('resultText');
+        let enterButton = document.getElementById('enterButton');
+        let againButton = document.getElementById('againButton');
+        let tries = 0;
+        let targetNumber;
+
+        angleArray = [[0,0,0],[-310,-362,-38],[-400,-320,-2],[135,-217,-88],[-224,-317,5],[-47,-219,-81],[-133,-360,-53]];
+
+        function rollDice() {
+            /*ANIMATION */
+            cube.style.animation = 'animate 1.4s linear';
+
+            const randomAngle = Math.floor(Math.random() * 6) + 1;
+            let rolledNumber = randomAngle;
+            cube.style.transform = 'rotateX('+angleArray[randomAngle][0]+'deg) rotateY('+angleArray[randomAngle][1]+'deg) rotateZ('+angleArray[randomAngle][2]+'deg)';
+            cube.style.transition = '1s linear';
+
+            cube.addEventListener('animationend', function(e) {
+                cube.style.animation = '';
+                displayResult(rolledNumber);
+            });
+        }
+
+        function displayResult(rolledNumber) {
+            let guess = parseInt(userInput.value);
+            guessText.textContent = "Your Guess: " + guess;
+            tries++;
+            if (guess >= 1 && guess <= 6) {
+                if (guess === rolledNumber) {
+                    resultText.textContent = "Congratulations! You guessed correctly!";
+                } else {
+                    if (tries < 3) {
+                        resultText.textContent = "Incorrect guess. Please try again.";
+                    } else {
+                        resultText.textContent = "Sorry, you've used all your tries. The correct number was " + rolledNumber + ".";
+                    }
+                }
+            } else {
+                resultText.textContent = "Please enter a number between 1 and 6.";
+            }
+        }
+
+        function initializeGame() {
+            targetNumber = Math.floor(Math.random() * 6) + 1;
+            userInput.value = '';
+            guessText.textContent = '';
+            resultText.textContent = '';
+            tries = 0;
+        }
+
+        enterButton.addEventListener('click', function() {
+            rollDice();
+        });
+
+        againButton.addEventListener('click', function() {
+            initializeGame();
+        });
+
+        // Trigger rollDice function when cube is clicked
+        cube.addEventListener('click', rollDice);
+
+        // Roll dice when Enter key is pressed
+        userInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                rollDice();
+            }
+        });
+
+        // Initialize game when page loads
+        initializeGame();
+    </script>
+</body>
+</html>
